@@ -9,12 +9,13 @@
     {% endif %}
 
     <form action="/blog" method='POST'>
-        <ul>
+        <ol>
             {% for blog in blog_entries %}
-                <li><a href='./blog?{{blog.id}}'>{{blog.title}}</a></li>
-                <li>{{blog.body}}</li>
+                <li><a href='./blog?id={{blog.id}}'><strong>{{blog.title}}</strong></a>
+                    <br />
+                {{blog.body}}</li>
             {% endfor %}
-        </ul>
+        </ol>
     </form>
 
 {% endblock %}
