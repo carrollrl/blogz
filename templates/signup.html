@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Register to Get It Done!</h1>
+<form action="/signup" method="post">
+    <table>
+        <tr>
+            <td>
+                <label>Username
+                    <input name="username" type="text">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Password
+                    <input name="password" type="password">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Verify Password
+                    <input name="verify" type="password">
+                </label>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Signup">
+</form>
+{% endblock %}
