@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>User List</h1>
+
+
+    <form action="/" method='POST'>
+        <ul>
+            {% for person in username_list %}
+                <li><a href='./index?user={{blog.user}}'><strong>{{blog.title}}</strong></a>
+                    <br />
+                {{blog.body}}</li>
+            {% endfor %}
+        </ul>
+    </form>
+
+{% endblock %}

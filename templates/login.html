@@ -2,24 +2,14 @@
 
 {% block content %}
 <h1>Log in to Blogz!</h1>
-<p>If you don't have an account, you may <a href="/signup">signup</a> for one</p>
+<p>If you don't have an account, you may <a href="/signup">Create Account!</a></p>
 <form action="/login" method="post">
-    <table>
-        <tr>
-            <td>
-                <label>Username
-                    <input name="username" type="text">
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Password
-                    <input name="password" type="password">
-                </label>
-            </td>
-        </tr>
-    </table>
+    <label>Username
+        <input name="username" type="text">
+    </label>
+    <label>Password
+        <input name="password" type="password">
+    </label>
     <input type="submit" value="Login">
 </form>
 {% endblock %}

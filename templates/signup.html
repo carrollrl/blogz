@@ -3,29 +3,18 @@
 {% block content %}
 <h1>Register to Get It Done!</h1>
 <form action="/signup" method="post">
-    <table>
-        <tr>
-            <td>
-                <label>Username
-                    <input name="username" type="text">
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Password
-                    <input name="password" type="password">
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Verify Password
-                    <input name="verify" type="password">
-                </label>
-            </td>
-        </tr>
-    </table>
+    <label>Username:
+        <input type="text" name="username" id="username" value="{username}" />
+    </label>
+    <p class="error">{username_error}</p>
+    <label>Password:
+        <input type="password" name="password" id="password" value="{password}" />
+    </label>
+    <p class="error">{password_error}</p>
+    <label>Verify Password:
+        <input type="password" name="verify" id="verify" value="{verify}" />
+    </label>
+    <p class="error">{verify_error}</p>
     <input type="submit" value="Signup">
 </form>
 {% endblock %}

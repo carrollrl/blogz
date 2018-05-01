@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from hashutils import make_pw_hash, check_pw_hash
 
@@ -26,7 +26,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
-    pw_hash = db.Column(db.String(20))
+    pw_hash = db.Column(db.String(200))
     blogs = db.relationship('Blog', backref='owner', lazy='joined')
 
     def __init__(self, username, pw_hash):
@@ -36,19 +36,60 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'blog', 'index', 'signup']
     if request.endpoint not in allowed_routes and 'username' not in session:
-        return redirect('login')
+        return render_template('login.html')
 
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
-    return None
+    username_list = User.query.all()
+    return username_list
 
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    return None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        verify = request.form['verify']
+        existing_user = User.query.filter_by(username=username).first()
+
+        username_error = ""
+        password_error = ""
+        verify_error = ""
+
+        if len(username) == 0:
+            username_error = "Don't forget to enter a username."
+            username = ""
+        else:
+            if len(username) < 3:
+                username_error = "Usernames must be at least 3 characters long."
+                username = ""
+
+        if len(password) == 0:
+            password_error = "Don't forget to enter a password."
+            password = ""
+        else:
+            if len(password) < 3:
+                password_error = "Passwords must be at least 3 characters long."
+
+        if verify != password:
+            verify_error = "Ooops, your passwords do not match."
+
+        # validation
+        if not username_error and not password_error and not verify_error:
+            if not existing_user:
+                new_user = User(username, pw_hash)
+                db.session.add(new_user)
+                db.session.commit()
+                session['username'] = username
+                return redirect('/newpost?username={0}'.format(new_user))
+            else:
+                return render_template('signup.html', username=username, password=password, verify=verify, username_error=username_error, password_error=password_error, verify_error=verify_error)
+                
+        else:
+            return render_template('signup.html', username_error=username_error, password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -70,7 +111,7 @@ def login():
 @app.route('/logout', methods=['POST'])
 def logout():
     del session['username']
-    return redirect('/')
+    return redirect('/blog')
 
 
 @app.route('/blog', methods=['POST', 'GET'])
@@ -79,6 +120,12 @@ def blog():
         single_post_id = int(request.args.get('id'))
         single_post = Blog.query.get(single_post_id)
         return render_template('single_post.html', single_post=single_post)
+
+    if request.args.get('user'):
+        single_user_variable = request.args.get('user')
+        single_user = Blog.query.get(single_user_variable)
+        return render_template('singleUser.html')
+    
     else:
         blog_entries = Blog.query.all()
         return render_template('blog_listing.html', blog_entries=blog_entries)
