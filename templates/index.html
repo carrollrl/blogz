@@ -4,13 +4,14 @@
 
     <h1>User List</h1>
 
+    {% if username_list|length == 0 %}
+        <p>No users yet.</p>
+    {% endif %}
 
     <form action="/" method='POST'>
         <ul>
             {% for person in username_list %}
-                <li><a href='./index?user={{blog.user}}'><strong>{{blog.title}}</strong></a>
-                    <br />
-                {{blog.body}}</li>
+                <li><a href='./index?id={{blog.id}}'><strong>{{blog.owner}}</strong></a></li>
             {% endfor %}
         </ul>
     </form>

@@ -8,9 +8,9 @@
         <p>No blog entries for this user.</p>
     {% endif %}
 
-    <form action="/" method='POST'>
+    <form action="/" method='GET'>
         <ul>
-            {% for blog in single_user %}
+            {% for blog in single_user %} <!-- blog.user? try blog.username-->
                 <li><a href='./blog?user={{blog.user}}'><strong>{{blog.title}}</strong></a>
                     <br />
                 {{blog.body}}</li>

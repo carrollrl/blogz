@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Register to Get It Done!</h1>
+<h1>Signup for Blogz!</h1>
 <form action="/signup" method="post">
     <label>Username:
-        <input type="text" name="username" id="username" value="{username}" />
+        <input type="text" name="username" id="username" />
     </label>
-    <p class="error">{username_error}</p>
+
+    {% if username_error %}
+    <p class="error">{{username_error}}</p>
+    {% endif %}
+
     <label>Password:
-        <input type="password" name="password" id="password" value="{password}" />
+        <input type="password" name="password" id="password" />
     </label>
-    <p class="error">{password_error}</p>
+
+    {% if password_error %}
+    <p class="error">{{password_error}}</p>
+    {% endif %}
+
     <label>Verify Password:
-        <input type="password" name="verify" id="verify" value="{verify}" />
+        <input type="password" name="verify" id="verify" />
     </label>
-    <p class="error">{verify_error}</p>
+
+    {% if verify_error %}
+    <p class="error">{{verify_error}}</p>
+    {% endif %}
+
     <input type="submit" value="Signup">
 </form>
+
 {% endblock %}
