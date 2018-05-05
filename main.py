@@ -145,11 +145,12 @@ def blog():
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
     if request.method == 'POST':
+        username = request.form['username']
         title = request.form['title']
         body = request.form['body']
-        # owner = grab current username from session and lookup owner's id
 
-        owner = User.query.filter_by(id)
+        # owner = grab current username from session and lookup owner's id
+        owner = User.query.filter_by(username=username).first()
         if owner and owner.id == id:
 
             title_error = ''
