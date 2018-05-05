@@ -66,7 +66,6 @@ def logout():
     return redirect('/blog')
 
 
-
 @app.route('/index', methods=['POST', 'GET'])
 def index():
     username_list = User.query.all()
@@ -80,7 +79,7 @@ def signup():
         password = request.form['password']
         verify = request.form['verify']
         existing_user = User.query.filter_by(username=username).first()
-        if existing_user and existing_user.password == password:
+        if not existing_user:
             username_error = ""
             password_error = ""
             verify_error = ""
@@ -101,24 +100,18 @@ def signup():
             if verify != password:
                 verify_error = "Ooops, your passwords do not match."
 
-        # validation
             if not username_error and not password_error and not verify_error:
-                if not existing_user:
-                    new_user = User(username, password)
-                    db.session.add(new_user)
-                    db.session.commit()
-                    session['username'] = username
-                    return redirect('/newpost')
+                new_user = User(username, password)
+                db.session.add(new_user)
+                db.session.commit()
+                session['username'] = username
+                return redirect('/newpost')
 
-                else:
-                    flash('That username already exists.', 'error')
-                    return redirect('/signup')
-                
             else:
                 return render_template('signup.html', username_error=username_error,password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
 
         else:
-            flash('User password incorrect, or user does not exist', 'error')
+            flash('That username already exists.', 'error')
             return redirect('/signup')
 
     else:
@@ -127,19 +120,18 @@ def signup():
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
-    if request.args.get('id'):
-        single_post_id = int(request.args.get('id'))
-        single_post = Blog.query.get(single_post_id)
-        return render_template('single_post.html', single_post=single_post)
-
     if request.args.get('user'):
         single_user_variable = request.args.get('user')
-        single_user = Blog.query.get(single_user_variable)
-        return render_template('singleUser.html')
+        blog_entries = Blog.query.filter_by(owner=single_user_variable).all()
+        return render_template('singleUser.html', blog_entries=blog_entries)
     
-    else:
-        blog_entries = Blog.query.all()
-        return render_template('blog_listing.html', blog_entries=blog_entries)
+    if request.args.get('blog'):
+        single_post_id = request.args.get('blog')
+        single_post = Blog.query.filter_by(id=single_post_id).first()
+        return render_template('single_post.html', blog=single_post)
+
+    blog_entries = Blog.query.all()
+    return render_template('blog_listing.html', blog_entries=blog_entries)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])

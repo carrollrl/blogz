@@ -11,9 +11,11 @@
     <form action="/blog" method='POST'>
         <ul>
             {% for blog in blog_entries %}
-                <li><a href='./blog?id={{blog.id}}'><strong>{{blog.title}}</strong></a>
+                <li><a href='./blog?blog={{blog.id}}'><strong>{{blog.title}}</strong></a>
                     <br />
-                {{blog.body}}</li>
+                {{blog.body}}<br />
+                <h5>Written by: <a href='./blog?user={{blog.owner}}'>{{blog.owner_id.username}}</a></h5>            
+            </li>
             {% endfor %}
         </ul>
     </form>

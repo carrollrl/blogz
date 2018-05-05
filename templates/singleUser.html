@@ -1,21 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <h1>User List</h1>
-
-    {% if single_user|length == 0 %}
-        <p>No blog entries for this user.</p>
-    {% endif %}
-
-    <form action="/" method='GET'>
-        <ul>
-            {% for blog in single_user %} <!-- blog.user? try blog.username-->
-                <li><a href='./blog?user={{blog.user}}'><strong>{{blog.title}}</strong></a>
-                    <br />
-                {{blog.body}}</li>
-            {% endfor %}
-        </ul>
-    </form>
-
+    {% for blog in blog_entries %}
+        <a href='./blog?blog={{blog.id}}'><strong>{{blog.title}}</strong></a>
+        <br />
+        {{blog.body}}
+        <br />
+        <h5>Written by: <a href='./blog?user={{blog.owner}}'>{{blog.owner_id.username}}</a></h5>            
+    {% endfor %}        
 {% endblock %}
