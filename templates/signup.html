@@ -2,13 +2,13 @@
 
 {% block content %}
 <h1>Signup for Blogz!</h1>
-<form action="/signup" method="post">
+<form action="/signup" method="POST">
     <label>Username:
         <input type="text" name="username" id="username" />
     </label>
 
     {% if username_error %}
-    <p class="error">{{username_error}}</p>
+        <p class="error">{{username_error}}</p>
     {% endif %}
 
     <label>Password:
@@ -16,7 +16,7 @@
     </label>
 
     {% if password_error %}
-    <p class="error">{{password_error}}</p>
+        <p class="error">{{password_error}}</p>
     {% endif %}
 
     <label>Verify Password:
@@ -24,7 +24,7 @@
     </label>
 
     {% if verify_error %}
-    <p class="error">{{verify_error}}</p>
+        <p class="error">{{verify_error}}</p>
     {% endif %}
 
     <input type="submit" value="Signup">

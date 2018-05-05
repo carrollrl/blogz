@@ -28,7 +28,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
     password = db.Column(db.String(120))
-    blogs = db.relationship('Blog', backref='owner_id', lazy='joined')
+    blogs = db.relationship('Blog', backref='owner_id')
 
     def __init__(self, username, password):
         self.username = username
@@ -112,13 +112,13 @@ def signup():
                 session['username'] = username
                 return redirect('/newpost?username={0}'.format(new_user))
             else:
-                return render_template('signup.html', username='', password='', verify='', username_error=username_error, password_error=password_error, verify_error=verify_error)
+                flash('That username already exists.')
+                return redirect('/signup')
                 
         else:
             return render_template('signup.html', username_error=username_error, password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
 
     return render_template('signup.html')
-
 
 
 @app.route('/blog', methods=['POST', 'GET'])
@@ -157,14 +157,10 @@ def new_post():
             db.session.add(newblog)
             db.session.commit()
             return redirect('/blog?id='+str(newblog.id))
-            # this is the url. stuff in "" is static,
-            # concatenated with newblog with attribute 'id'.
-            # redirects to /blog with newblog id, python knows
-            # that the id info is already contained there.
         else:
             return render_template('newpost.html', title=title, body=body, title_error=title_error, body_error=body_error)
     
-    return render_template('newpost.html')
+    return render_template('signup.html')
 
 
 if __name__ == '__main__':
