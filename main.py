@@ -111,6 +111,8 @@ def signup():
                 db.session.commit()
                 session['username'] = username
                 return redirect('/newpost?username={0}'.format(new_user))
+
+
             else:
                 flash('That username already exists.')
                 return redirect('/signup')
@@ -160,7 +162,7 @@ def new_post():
         else:
             return render_template('newpost.html', title=title, body=body, title_error=title_error, body_error=body_error)
     
-    return render_template('signup.html')
+    return render_template('newpost.html')
 
 
 if __name__ == '__main__':
