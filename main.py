@@ -148,11 +148,8 @@ def new_post():
         username = session['username']
         title = request.form['title']
         body = request.form['body']
-
-        # owner = grab current username from session and lookup owner's id
         owner = User.query.filter_by(username=username).first()
         if owner:
-
             title_error = ''
             body_error = ''
 
