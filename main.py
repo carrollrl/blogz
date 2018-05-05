@@ -47,7 +47,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user_variable = User.query.filter_by(username=username)
+        user_variable = User.query.filter_by(username=username).first()
         if user_variable and user_variable.password == password:
             session['username'] = username
             flash('Logged in')

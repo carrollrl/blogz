@@ -11,7 +11,7 @@
     <form action="/" method='POST'>
         <ul>
             {% for person in username_list %}
-                <li><a href='./index?id={{blog.id}}'><strong>{{blog.owner}}</strong></a></li>
+                <li><a href='/?id={{blog.id}}'><strong>{{blog.owner}}</strong></a></li>
             {% endfor %}
         </ul>
     </form>
