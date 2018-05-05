@@ -111,18 +111,18 @@ def signup():
                     return redirect('/newpost')
 
                 else:
-                    flash('That username already exists.')
+                    flash('That username already exists.', 'error')
                     return redirect('/signup')
                 
             else:
                 return render_template('signup.html', username_error=username_error,password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
 
         else:
-            flash('User password incorrect, or user does not exist')
+            flash('User password incorrect, or user does not exist', 'error')
             return redirect('/signup')
 
-
-    return render_template('signup.html')
+    else:
+        return render_template('signup.html')
 
 
 @app.route('/blog', methods=['POST', 'GET'])
@@ -145,13 +145,13 @@ def blog():
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
     if request.method == 'POST':
-        username = request.form['username']
+        username = session['username']
         title = request.form['title']
         body = request.form['body']
 
         # owner = grab current username from session and lookup owner's id
         owner = User.query.filter_by(username=username).first()
-        if owner and owner.id == id:
+        if owner:
 
             title_error = ''
             body_error = ''
@@ -171,10 +171,12 @@ def new_post():
                 return render_template('newpost.html', title=title, body=body, title_error=title_error, body_error=body_error)
 
         else:
-            flash('Error, please try again')
+            flash('Error, please try again', 'error')
             return redirect('/newpost')
-    
-    return render_template('newpost.html')
+                
+
+    else:
+        return render_template('newpost.html')
 
 
 if __name__ == '__main__':
