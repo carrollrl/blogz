@@ -60,7 +60,7 @@ def login():
 
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     del session['username']
     return redirect('/blog')
@@ -80,45 +80,47 @@ def signup():
         password = request.form['password']
         verify = request.form['verify']
         existing_user = User.query.filter_by(username=username).first()
+        if existing_user and existing_user.password == password:
+            username_error = ""
+            password_error = ""
+            verify_error = ""
 
-        username_error = ""
-        password_error = ""
-        verify_error = ""
-
-        if len(username) == 0:
-            username_error = "Don't forget to enter a username."
-            username = ""
-        else:
-            if len(username) < 3:
-                username_error = "Usernames must be at least 3 characters long."
+            if len(username) == 0:
+                username_error = "Don't forget to enter a username."
                 username = ""
+            elif len(username) < 3:
+                    username_error = "Usernames must be at least 3 characters long."
+                    username = ""
 
-        if len(password) == 0:
-            password_error = "Don't forget to enter a password."
-            password = ""
-        else:
-            if len(password) < 3:
-                password_error = "Passwords must be at least 3 characters long."
+            if len(password) == 0:
+                password_error = "Don't forget to enter a password."
+                password = ""
+            elif len(password) < 3:
+                    password_error = "Passwords must be at least 3 characters long."
 
-        if verify != password:
-            verify_error = "Ooops, your passwords do not match."
+            if verify != password:
+                verify_error = "Ooops, your passwords do not match."
 
         # validation
-        if not username_error and not password_error and not verify_error:
-            if not existing_user:
-                new_user = User(username, password)
-                db.session.add(new_user)
-                db.session.commit()
-                session['username'] = username
-                return redirect('/newpost?username={0}'.format(new_user))
+            if not username_error and not password_error and not verify_error:
+                if not existing_user:
+                    new_user = User(username, password)
+                    db.session.add(new_user)
+                    db.session.commit()
+                    session['username'] = username
+                    return redirect('/newpost')
 
-
-            else:
-                flash('That username already exists.')
-                return redirect('/signup')
+                else:
+                    flash('That username already exists.')
+                    return redirect('/signup')
                 
+            else:
+                return render_template('signup.html', username_error=username_error,password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
+
         else:
-            return render_template('signup.html', username_error=username_error, password_error=password_error, verify_error=verify_error, username=username, password='', verify='')
+            flash('User password incorrect, or user does not exist')
+            return redirect('/signup')
+
 
     return render_template('signup.html')
 
@@ -145,22 +147,31 @@ def new_post():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        title_error = ''
-        body_error = ''
+        # owner = grab current username from session and lookup owner's id
 
-        if len(title) == 0:
-            title_error = "You have to add a title."
+        owner = User.query.filter_by(id)
+        if owner and owner.id == id:
 
-        if len(body) == 0:
-            body_error = "You have to add some text to this blog post."
+            title_error = ''
+            body_error = ''
 
-        if not title_error and not body_error:
-            newblog = Blog(title, body, owner)
-            db.session.add(newblog)
-            db.session.commit()
-            return redirect('/blog?id='+str(newblog.id))
+            if len(title) == 0:
+                title_error = "You have to add a title."
+
+            if len(body) == 0:
+                body_error = "You have to add some text to this blog post."
+
+            if not title_error and not body_error:
+                newblog = Blog(title, body, owner)
+                db.session.add(newblog)
+                db.session.commit()
+                return redirect('/blog?id='+str(newblog.id))
+            else:
+                return render_template('newpost.html', title=title, body=body, title_error=title_error, body_error=body_error)
+
         else:
-            return render_template('newpost.html', title=title, body=body, title_error=title_error, body_error=body_error)
+            flash('Error, please try again')
+            return redirect('/newpost')
     
     return render_template('newpost.html')
 
